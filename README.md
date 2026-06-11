@@ -1,4 +1,4 @@
-# Riverside Books — AI Engineer Task
+# Riverside Books — AI Grad Task
 
 Welcome! This is a short, self-contained task. We're **not** looking for perfection —
 we want to see how you think about and build a small AI-powered feature.
