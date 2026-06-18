@@ -6,18 +6,16 @@ def cosine_similarity(a, b):
 
 
 class SemanticMatcher:
-    def __init__(self, faqs, embedder):
+    def __init__(self, faqs, embedder, threshold=0.7):
         self.faqs = faqs
         self.embedder = embedder
+        self.threshold = threshold  # FIXED
 
         self._precompute_embeddings()
 
     def _precompute_embeddings(self):
         for faq in self.faqs:
-            text = f"""
-            Question: {faq.question}
-            Answer: {faq.answer}
-            """
+            text = f"Question: {faq.question} Answer: {faq.answer}"
             faq.embedding = self.embedder.embed(text)
 
     def find_best_match(self, query: str):
@@ -32,5 +30,8 @@ class SemanticMatcher:
             if score > best_score:
                 best_score = score
                 best_faq = faq
+
+        if best_score < self.threshold:
+            return None, best_score
 
         return best_faq, best_score
