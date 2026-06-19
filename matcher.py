@@ -7,7 +7,7 @@ def cosine_similarity(a, b):
 
 
 class SemanticMatcher:
-    def __init__(self, faqs, embedder, threshold=0.3):
+    def __init__(self, faqs, embedder, threshold=0.45):
         self.faqs = faqs
         self.embedder = embedder
         self.threshold = threshold  # FIXED

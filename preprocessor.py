@@ -24,25 +24,105 @@ class QueryPreprocessor:
         "my", "our", "you"
     }
 
+    # Synonym groups
+    SYNONYM_GROUPS = {
+        "time": [
+            "opening hours", "opening times", "open", "close", "closing time", "hours", "shut"
+        ],
+        "location": [
+            "address", "located", "where", "find you", "store", "shop"
+        ],
+        "gift_wrapping": [
+            "gift wrap", "wrap gifts", "gift packaging"
+        ],
+        "order": [
+            "order book", "out of stock", "not in stock", "special order", "backorder"
+        ],
+        "second_hand": [
+            "used books", "second hand", "pre-owned", "sell books", "buy books"
+        ],
+        "events": [
+            "author readings", "book club", "events", "signings"
+        ],
+        "parking": [
+            "parking", "car park", "park nearby", "parking lot"
+        ],
+        "loyalty": [
+            "loyalty", "rewards", "stamp card", "points"
+        ],
+        "vouchers": [
+            "gift voucher", "gift card", "store credit"
+        ],
+        "payment": [
+            "cash", "card", "contactless", "payment methods"
+        ],
+        "website": [
+            "website", "online", "buy books", "order online", "click and collect online"
+        ],
+        "click_collect": [
+            "click and collect", "pickup", "collect order", "in store pickup"
+        ],
+        "returns": [
+            "return", "refund", "money back", "exchange"
+        ],
+        "children": [
+            "kids", "child", "children", "children books", "kids books"
+        ],
+        "recommend": [
+            "recommend", "suggest", "book advice", "what should i read"
+        ],
+        "cafe": [
+            "cafe", "coffee", "tea", "snacks", "drinks"
+        ],
+        "accessibility": [
+            "wheelchair", "disabled access", "step free", "accessible"
+        ],
+        "digital": [
+            "ebook", "ebooks", "audiobook", "audiobooks", "digital books"
+        ],
+        "reserve": [
+            "reserve", "hold book", "save book", "put aside"
+        ],
+        "student": [
+            "student", "discount", "student discount", "cheap books"
+        ]
+    }
+
     @classmethod
     def preprocess(cls, query: str, debug: bool = True) -> str:
         query = query.lower()
 
-        # normalisation
         for pattern, replacement in cls.NORMALISATIONS.items():
             query = re.sub(pattern, replacement, query)
 
-        # tokenisation + stopword removal
         words = re.findall(r"\b\w+\b", query)
 
-        filtered = [
-            w for w in words
-            if w not in cls.STOPWORDS
-        ]
+        base_words = [w for w in words if w not in cls.STOPWORDS]
 
-        cleaned = " ".join(filtered)
+        seen = set()
+        cleaned_base = []
+        for w in base_words:
+            if w not in seen:
+                cleaned_base.append(w)
+                seen.add(w)
+
+        appended = []
+        appended_seen = set()
+
+        for w in cleaned_base:
+            for group in cls.SYNONYM_GROUPS.values():
+                if w in group:
+                    for syn in group:
+                        if syn not in seen and syn not in appended_seen:
+                            appended.append(syn)
+                            appended_seen.add(syn)
+
+        final_tokens = cleaned_base + appended
+        cleaned = " ".join(final_tokens)
 
         if debug:
-            print(f"[DEBUG] cleaned query: {cleaned}")
+            print(f"[DEBUG] base: {cleaned_base}")
+            print(f"[DEBUG] appended: {appended}")
+            print(f"[DEBUG] final: {cleaned}")
 
         return cleaned
