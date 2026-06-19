@@ -19,22 +19,24 @@ class SemanticMatcher:
             text = f"Question: {faq.question} Answer: {faq.answer}"
             faq.embedding = self.embedder.embed(text)
 
-    def find_best_match(self, query: str):
+    def find_matches(self, query: str, k=3):
         query = QueryPreprocessor.preprocess(query)
 
         query_embedding = self.embedder.embed(query)
 
-        best_faq = None
-        best_score = -1
+        results = []
 
         for faq in self.faqs:
-            score = cosine_similarity(query_embedding, faq.embedding)
+            score = cosine_similarity(
+                query_embedding,
+                faq.embedding
+            )
 
-            if score > best_score:
-                best_score = score
-                best_faq = faq
+            results.append((faq, score))
 
-        if best_score < self.threshold:
-            return None, best_score
+        results.sort(
+            key=lambda x: x[1],
+            reverse=True
+        )
 
-        return best_faq, best_score
+        return results[:k]
