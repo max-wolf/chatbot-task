@@ -1,4 +1,5 @@
 import numpy as np
+from preprocessor import QueryPreprocessor
 
 
 def cosine_similarity(a, b):
@@ -6,7 +7,7 @@ def cosine_similarity(a, b):
 
 
 class SemanticMatcher:
-    def __init__(self, faqs, embedder, threshold=0.7):
+    def __init__(self, faqs, embedder, threshold=0.6):
         self.faqs = faqs
         self.embedder = embedder
         self.threshold = threshold  # FIXED
@@ -19,6 +20,8 @@ class SemanticMatcher:
             faq.embedding = self.embedder.embed(text)
 
     def find_best_match(self, query: str):
+        query = QueryPreprocessor.preprocess(query)
+
         query_embedding = self.embedder.embed(query)
 
         best_faq = None
