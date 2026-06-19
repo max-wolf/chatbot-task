@@ -89,7 +89,7 @@ class QueryPreprocessor:
     }
 
     @classmethod
-    def preprocess(cls, query: str, debug: bool = True) -> str:
+    def preprocess(cls, query: str, debug: bool = False) -> str:
         query = query.lower()
 
         for pattern, replacement in cls.NORMALISATIONS.items():

@@ -1,5 +1,5 @@
 class Chatbot:
-    def __init__(self, matcher, debug=True, gap_threshold=0.05):
+    def __init__(self, matcher, debug=False, gap_threshold=0.05):
         self.matcher = matcher
         self.debug = debug
         self.gap_threshold = gap_threshold
@@ -29,14 +29,14 @@ class Chatbot:
             print(f"[DEBUG] Second score: {second_score:.3f}")
             print(f"[DEBUG] Gap: {gap:.3f}\n")
 
-        # threshold check (absolute confidence)
+        # threshold check
         if best_score < self.matcher.threshold:
             return {
                 "answer": "Sorry, I don't know that one — please ask a member of staff.",
                 "score": best_score
             }
 
-        # ambiguity check (relative confidence)
+        # ambiguity check
         if gap < self.gap_threshold:
             return {
                 "answer": "Sorry, I'm not confident about that — please ask a member of staff.",
