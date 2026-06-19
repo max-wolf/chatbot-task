@@ -24,7 +24,6 @@ class QueryPreprocessor:
         "my", "our", "you"
     }
 
-    # Synonym groups
     SYNONYM_GROUPS = {
         "time": [
             "opening hours", "opening times", "open", "close", "closing time", "hours", "shut"
