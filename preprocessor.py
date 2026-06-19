@@ -13,16 +13,36 @@ class QueryPreprocessor:
         r"\by\b": "why"
     }
 
+    STOPWORDS = {
+        "a", "an", "the",
+        "and", "or", "but",
+        "do", "does", "did",
+        "is", "was", "were",
+        "can", "could", "would",
+        "i", "we", "they",
+        "to", "of", "in", "on", "for", "with",
+        "my", "our", "you"
+    }
+
     @classmethod
-    def preprocess(cls, query: str) -> str:
+    def preprocess(cls, query: str, debug: bool = True) -> str:
         query = query.lower()
 
+        # normalisation
         for pattern, replacement in cls.NORMALISATIONS.items():
             query = re.sub(pattern, replacement, query)
 
-        # remove extra whitespace
-        query = " ".join(query.split())
+        # tokenisation + stopword removal
+        words = re.findall(r"\b\w+\b", query)
 
-        print(f"Processed query: {query}")
+        filtered = [
+            w for w in words
+            if w not in cls.STOPWORDS
+        ]
 
-        return query
+        cleaned = " ".join(filtered)
+
+        if debug:
+            print(f"[DEBUG] cleaned query: {cleaned}")
+
+        return cleaned
