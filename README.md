@@ -16,12 +16,15 @@ similarity threshold
 score gap
 
 Running:
-Create virtual environment
+Create and activate virtual environment
 Install dependencies from requirements.txt
+
 Normal mode:
 python main.py
 Debug mode:
 python main.py --debug
+
+
 
 
 add some simple regex -> "u" convert to "you"

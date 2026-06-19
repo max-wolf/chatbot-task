@@ -1,17 +1,9 @@
 import argparse
-import json
 
 from chatbot import Chatbot
 from matcher import SemanticMatcher
 from embeddings import EmbeddingModel
-from faqs import FAQ
-
-
-def load_faqs():
-    with open("faqs.json", "r") as f:
-        data = json.load(f)
-
-    return [FAQ(d["id"], d["question"], d["answer"]) for d in data]
+from faqs import load_faqs
 
 
 def main():
@@ -19,10 +11,10 @@ def main():
     parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
 
-    faqs = load_faqs()
+    faqs = load_faqs("faqs.json")
 
     embedder = EmbeddingModel()
-    matcher = SemanticMatcher(faqs, embedder, threshold=0.45)
+    matcher = SemanticMatcher(faqs, embedder, threshold=0.6)
 
     bot = Chatbot(matcher, debug=args.debug)
 
